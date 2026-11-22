@@ -44,7 +44,7 @@ const libraryRegisterSchema = new mongoose.Schema(
     address: { type: String, default: "" },
     city: { type: String, default: "Noida" },
     phone: { type: String, required: true },
-    activeStudentsLimit: { type: Number, default: 100 },
+    activeStudentsLimit: { type: Number, default: 50 },
 
     ownerName: { type: String, required: true },
     email: { type: String, required: true },
@@ -171,14 +171,14 @@ app.post("/api/register", async (req, res) => {
       null
     );
 
-    // Calculate activeStudentsLimit based on seats/capacity (ignoring subscription plan data)
-    let seatsLimit = 100;
+    // Calculate activeStudentsLimit based on seats/capacity (default 50 for FREE plan in database)
+    let seatsLimit = 50;
     if (formData.quota) {
       seatsLimit = Number(formData.quota);
     } else if (formData.activeStudentsLimit) {
       seatsLimit = Number(formData.activeStudentsLimit);
     } else if (formData.capacity) {
-      seatsLimit = formData.capacity === "Unlimited" ? 1000 : Number(formData.capacity) || 100;
+      seatsLimit = formData.capacity === "Unlimited" ? 1000 : Number(formData.capacity) || 50;
     }
 
     // Notice: Picture and Description are NOT saved into libraryregister
