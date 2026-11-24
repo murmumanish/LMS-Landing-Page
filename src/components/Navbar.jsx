@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { FaBars, FaTimes, FaSignInAlt, FaCalendarCheck, FaPhoneAlt, FaWhatsapp, FaUserPlus } from "react-icons/fa";
+import { FaBars, FaTimes, FaSignInAlt, FaUserPlus } from "react-icons/fa";
 
-export default function Navbar({ onOpenDemo }) {
+export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
@@ -23,6 +23,7 @@ export default function Navbar({ onOpenDemo }) {
     { label: "Home", path: "/" },
     { label: "Features", path: "/features" },
     { label: "Pricing", path: "/pricing" },
+    { label: "Guide", path: "/guide" },
     { label: "About Us", path: "/about-us" },
     { label: "Contact Us", path: "/contact-us" },
   ];
@@ -80,7 +81,7 @@ export default function Navbar({ onOpenDemo }) {
             justifyContent: "center",
             gap: "28px",
             flex: 1,
-            margin: "0 24px"
+            margin: "0 28px"
           }}
           className="desktop-nav"
         >

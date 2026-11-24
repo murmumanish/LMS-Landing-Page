@@ -4,7 +4,6 @@ import {
   FaEnvelope,
   FaWhatsapp,
   FaMapMarkerAlt,
-  FaHeart,
   FaSignInAlt,
   FaArrowRight
 } from "react-icons/fa";
@@ -64,7 +63,7 @@ export default function Footer() {
             </p>
 
             <div style={{ fontSize: "0.8rem", color: "#bae6fd", fontWeight: "500" }}>
-              © {new Date().getFullYear()} LMS by Study Guru. All rights reserved.
+              © {new Date().getFullYear()} Study Guru. All rights reserved.
             </div>
           </div>
 
@@ -128,6 +127,20 @@ export default function Footer() {
                 }}
               >
                 Plans & Pricing
+              </Link>
+              <Link
+                to="/guide"
+                style={{ color: "#f0f9ff", transition: "all 0.2s" }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.color = "#fed7aa";
+                  e.currentTarget.style.transform = "translateX(4px)";
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.color = "#f0f9ff";
+                  e.currentTarget.style.transform = "translateX(0)";
+                }}
+              >
+                Onboarding Guide
               </Link>
               <Link
                 to="/about-us"

@@ -1,66 +1,96 @@
 import { Link } from "react-router-dom";
-import { FaTh, FaQrcode, FaCashRegister, FaUserPlus, FaChartLine, FaShieldAlt, FaCheck, FaArrowRight } from "react-icons/fa";
+import { FaTh, FaQrcode, FaCashRegister, FaUserPlus, FaChartLine, FaThLarge, FaCheck, FaArrowRight } from "react-icons/fa";
 
 const features = [
   {
+    stepId: "seats",
     icon: <FaTh />,
     color: "#2563eb",
     bg: "#eff6ff",
     borderTop: "#2563eb",
-    title: " Multi-Shift Seat Engine",
-    desc: "Interactive visual matrix separating Morning, Afternoon, Evening, Night, and 24-Hour shifts. Completely eliminates double-booking and seating conflicts.",
-    highlights: ["Interactive floor plan", "Shift timing validation", "1-click seat reassignments"],
-    pageLink: "/features"
+    title: "Smart Seat Management",
+    desc: "Take complete control of your library seating with an intelligent seat management system. Manage seats floor-wise and room-wise, track real-time availability, monitor occupancy, and assign multiple students to the same seat across Morning, Afternoon, and Night shifts. Maximize seating capacity while keeping every seat organized.",
+    highlights: [
+      "Floor & room-wise organization with real-time occupancy tracking",
+      "Multi-shift allocation: Assign up to 3 students per physical seat",
+      "Interactive visual layout with smart search & availability filters"
+    ],
+    pageLink: "/features?step=seats#workflow-guide"
   },
   {
-    icon: <FaQrcode />,
-    color: "#10b981",
-    bg: "#ecfdf5",
-    borderTop: "#10b981",
-    title: "Dual Attendance & Fast QR Kiosk",
-    desc: "Includes both an in-system staff check-in desk and a standalone Public Kiosk screen (/public-attendance). Students scan and log entry in under 1 second.",
-    highlights: ["Standalone Public QR Kiosk", "Live In-Library headcount", "Auto-timeout security screen"],
-    pageLink: "/features"
-  },
-  {
-    icon: <FaCashRegister />,
-    color: "#059669",
-    bg: "#f0fdf4",
-    borderTop: "#059669",
-    title: "Cashier Fee Desk & Validity Alerts",
-    desc: "Speed up counter fee collections with our dedicated cashier desk (/collect-fee). Create custom fee plans and send automated WhatsApp expiry reminders.",
-    highlights: ["Dedicated /collect-fee cashier portal", "Automated WhatsApp expiry reminders", "Instant PDF receipts with QR verification"],
-    pageLink: "/features"
-  },
-  {
+    stepId: "admission",
     icon: <FaUserPlus />,
     color: "#2563eb",
     bg: "#eff6ff",
     borderTop: "#2563eb",
-    title: "Counter QR Student Self-Admission",
-    desc: "Place a QR sticker on your reception desk. Walk-in students scan, select their preferred shift, and register from their phone for instant 1-click approval.",
-    highlights: ["Public counter admission portal", "Instant digital ID card generation", "Zero paperwork registration"],
-    pageLink: "/features"
+    title: "Smart Student Admission & Registration System",
+    desc: "Simplify student onboarding with two flexible admission methods: Manual Admission and QR Code-Based Admission. Administrators can register students by entering their details manually or allow students to submit their personal information through a QR-based admission form. Every student receives a unique Student ID and Registration Number. Collect a one-time Registration Fee during the first admission, followed by the selected subscription plan fee. Administrators can also assign seats and shifts directly from the dashboard, making the entire admission process smooth, fast, and organized.",
+    highlights: [
+      "Dual methods: Manual staff entry & QR code-based self-admission",
+      "Unique Student ID & Registration Number generation",
+      "Direct seat & shift assignment with initial registration fee collection"
+    ],
+    pageLink: "/features?step=admission#workflow-guide"
   },
   {
+    stepId: "attendance",
+    icon: <FaQrcode />,
+    color: "#10b981",
+    bg: "#ecfdf5",
+    borderTop: "#10b981",
+    title: "Dual Attendance System",
+    desc: "Simplify student attendance with two flexible options: QR Code Scanning and Manual Attendance. Students can mark their attendance by scanning a QR code using their mobile phones or by entering their Student ID/Number. The system automatically records attendance time, provides easy ON/OFF control, and securely maintains attendance records for up to 30 days before automatic deletion.",
+    highlights: [
+      "Dual options: Mobile QR code scanning & manual Student ID entry",
+      "Automatic timestamp logging with easy ON/OFF attendance control",
+      "Secure records maintained for up to 30 days with auto-cleanup"
+    ],
+    pageLink: "/features?step=attendance#workflow-guide"
+  },
+  {
+    stepId: "fee-desk",
+    icon: <FaCashRegister />,
+    color: "#059669",
+    bg: "#f0fdf4",
+    borderTop: "#059669",
+    title: "Smart Fee & Validity Management",
+    desc: "Simplify library fee collection with flexible, plan-based payment management. Collect student fees according to their selected plans, manage automatic validity renewals, and track upcoming expiry dates with timely alerts. Generate professional invoices, download and print receipts, or share them directly via WhatsApp and Gmail. For UPI transactions, record UTR numbers to maintain accurate and transparent payment records.",
+    highlights: [
+      "Plan-based fee collection & automatic validity renewal tracking",
+      "Instant invoice generation with print & WhatsApp/Gmail sharing",
+      "UPI transaction tracking with UTR numbers for 100% transparency"
+    ],
+    pageLink: "/features?step=fee-desk#workflow-guide"
+  },
+  {
+    stepId: "overview",
+    icon: <FaThLarge />,
+    color: "#6366f1",
+    bg: "#eef2ff",
+    borderTop: "#6366f1",
+    title: "Complete Library Overview Dashboard",
+    desc: "Get a complete overview of your library from one centralized dashboard. Monitor total students, active members, suspended accounts, disabled students, and memberships that are expiring soon or already expired. Access student statistics and membership information at a glance, helping you track library activity, monitor student status, and manage daily operations more efficiently.",
+    highlights: [
+      "Monitor total students, active members & suspended accounts",
+      "Track expiring soon & already expired memberships at a glance",
+      "Real-time student statistics & status monitoring from one place"
+    ],
+    pageLink: "/features?step=overview#workflow-guide"
+  },
+  {
+    stepId: "expenses",
     icon: <FaChartLine />,
     color: "#f59e0b",
     bg: "#fffbeb",
     borderTop: "#f59e0b",
-    title: "Expense Tracker & Financial Analytics",
-    desc: "Track daily counter cash collection, monthly seat revenues, and operational expenses (rent, electricity, internet, AC) with exportable GST statements.",
-    highlights: ["Daily cash closing calculator", "Operational expense tracking", "Monthly profit & revenue analytics"],
-    pageLink: "/features"
-  },
-  {
-    icon: <FaShieldAlt />,
-    color: "#ef4444",
-    bg: "#fef2f2",
-    borderTop: "#ef4444",
-    title: "Single-Device Lock & Multi-Branch",
-    desc: "Role-based access control (Owner & Staff) with strict single-device concurrent session enforcement, failed login lockouts, and multi-branch management.",
-    highlights: ["Single-device session enforcement", "Dynamic URL prefix routing", "Multi-branch cloud isolation"],
-    pageLink: "/features"
+    title: "Expense Tracker & Financial Management",
+    desc: "Take complete control of your library's finances with an integrated Expense Tracking and Financial Reporting System. Track total payments received, add and manage daily expenses, and monitor your overall financial performance from one dashboard. View financial reports with flexible monthly and yearly filters, analyze income and expenses, and download or share payment invoices for easy record-keeping.",
+    highlights: [
+      "Track total payments received & record daily operational expenses",
+      "Flexible monthly & yearly financial performance reporting",
+      "Analyze income vs. expenses with easy invoice download & sharing"
+    ],
+    pageLink: "/features?step=expenses#workflow-guide"
   }
 ];
 
@@ -80,11 +110,14 @@ export default function FeaturesGrid() {
         </div>
 
         {/* Feature Cards Grid */}
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))",
-          gap: "28px"
-        }}>
+        <div
+          className="features-main-grid"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            gap: "28px"
+          }}
+        >
           {features.map((f, i) => (
             <div
               key={i}
@@ -132,6 +165,14 @@ export default function FeaturesGrid() {
 
               <Link
                 to={f.pageLink}
+                onClick={() => {
+                  const targetEl = document.getElementById("workflow-guide");
+                  if (targetEl) {
+                    setTimeout(() => {
+                      targetEl.scrollIntoView({ behavior: "smooth", block: "start" });
+                    }, 80);
+                  }
+                }}
                 style={{
                   display: "inline-flex",
                   alignItems: "center",

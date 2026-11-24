@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   FaPhoneAlt,
   FaEnvelope,
@@ -10,20 +10,32 @@ import {
   FaTag,
   FaTh
 } from "react-icons/fa";
+import { postJson } from "../lib/api";
+
+const DEFAULT_INQUIRY_TOPIC = "Registration & First 3 Months Free Offer";
+const DEMO_INQUIRY_TOPIC = "Features & Live Demo Walkthrough";
 
 export default function ContactUs() {
+  const { search } = useLocation();
+  const requestedTopic = new URLSearchParams(search).get("topic");
+  const initialTopic = requestedTopic === "demo" ? DEMO_INQUIRY_TOPIC : DEFAULT_INQUIRY_TOPIC;
+
   const [formData, setFormData] = useState({
     name: "",
     libraryName: "",
     phone: "",
     gmail: "",
-    inquiryTopic: "Registration & First 3 Months Free Offer",
+    inquiryTopic: initialTopic,
     message: ""
   });
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
+    setSubmitError("");
 
     // 1. Name constraint
     const cleanName = formData.name.trim();
@@ -76,7 +88,27 @@ export default function ContactUs() {
       return;
     }
 
-    setSubmitted(true);
+    setIsSubmitting(true);
+
+    try {
+      await postJson("/api/contact", {
+        name: cleanName,
+        libraryName: formData.libraryName.trim(),
+        phone: cleanPhone,
+        email: formData.gmail.trim(),
+        topic: formData.inquiryTopic,
+        message: formData.message.trim()
+      });
+
+      setSubmitted(true);
+    } catch (err) {
+      setSubmitError(
+        err.message ||
+          "Could not send your message right now. Please try again or use the WhatsApp button."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const openWhatsAppInquiry = () => {
@@ -549,7 +581,7 @@ export default function ContactUs() {
                       <option value="Registration & First 3 Months Free Offer">Library Registration & 3 Months Free Pro Offer</option>
                       <option value="Pricing & Subscription Plans">Plans & Pricing (Starter, Basic, Pro, Enterprise)</option>
                       <option value="Features & Live Demo Walkthrough">Core Features Demo (Interactive Seat Map, Attendance)</option>
-                      <option value="QR Attendance Kiosk & Hardware Setup">Gate QR Attendance Kiosk & Tablet Setup</option>
+                      <option value="QR Attendance Setup & Hardware">Gate QR Attendance & Tablet Setup</option>
                       <option value="Data Migration from Paper / Excel">Old Paper Register / Excel Data Migration to LMS</option>
                       <option value="General Product Inquiry">General LMS Product Inquiry</option>
                     </select>
@@ -579,10 +611,29 @@ export default function ContactUs() {
                     ></textarea>
                   </div>
 
+                  {submitError && (
+                    <div
+                      role="alert"
+                      style={{
+                        background: "#fef2f2",
+                        border: "1px solid #fecaca",
+                        color: "#b91c1c",
+                        padding: "12px 16px",
+                        borderRadius: "8px",
+                        fontSize: "0.88rem",
+                        fontWeight: "600",
+                        lineHeight: 1.5
+                      }}
+                    >
+                      {submitError}
+                    </div>
+                  )}
+
                   {/* Submit Button (Matching Style in Image with Orange Accent) */}
                   <div style={{ display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap", marginTop: "6px" }}>
                     <button
                       type="submit"
+                      disabled={isSubmitting}
                       style={{
                         background: "#ffffff",
                         color: "#0284c7",
@@ -593,7 +644,8 @@ export default function ContactUs() {
                         fontWeight: "900",
                         letterSpacing: "0.08em",
                         textTransform: "uppercase",
-                        cursor: "pointer",
+                        cursor: isSubmitting ? "not-allowed" : "pointer",
+                        opacity: isSubmitting ? 0.75 : 1,
                         transition: "all 0.2s ease",
                         boxShadow: "0 4px 14px rgba(0, 0, 0, 0.15)"
                       }}
@@ -610,7 +662,7 @@ export default function ContactUs() {
                         e.currentTarget.style.transform = "translateY(0)";
                       }}
                     >
-                      SUBMIT
+                      {isSubmitting ? "SENDING..." : "SUBMIT"}
                     </button>
 
                     <button

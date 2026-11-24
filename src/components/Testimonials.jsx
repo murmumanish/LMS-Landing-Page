@@ -33,7 +33,7 @@ const reviews = [
     role: "Owner, Lakshya Self Study Hub",
     location: "Indraprastha Area, Kota",
     seats: "240 Seats (24-Hour Shifts)",
-    text: "Students scan the attendance QR kiosk at the entrance in less than a second. We always know exactly how many students are inside the hall. Single-device security means staff can't misuse credentials.",
+    text: "Students scan the attendance QR scanner at the entrance in less than a second. We always know exactly how many students are inside the hall. Single-device security means staff can't misuse credentials.",
     rating: 5,
     borderTop: "#2563eb"
   }
@@ -113,7 +113,7 @@ export default function Testimonials() {
                     {r.role} • {r.location}
                   </div>
                   <div style={{ fontSize: "0.75rem", color: "#059669", fontWeight: "700", marginTop: "2px" }}>
-                    ⚡ {r.seats}
+                    {r.seats}
                   </div>
                 </div>
               </div>

@@ -25,7 +25,7 @@ const plans = [
     ],
     notIncluded: [
       "Automated QR Code Self-Registration",
-      "Standalone Public Attendance Kiosk",
+      "Standalone Public Attendance Station",
       "Multi-Branch Admin Console"
     ]
   },
@@ -70,7 +70,7 @@ const plans = [
       "Everything in Basic plan",
       "Up to 500 Active Students",
       "Multi-Shift Optimization & Conflict Filter",
-      "Standalone Public QR Kiosk Portal",
+      "Standalone Public QR Attendance Portal",
       "Enhanced Single-Device Session Security",
       "99.9% Uptime Guarantee SLA",
       "Direct 1-on-1 Phone & WhatsApp Hotline"
@@ -291,7 +291,7 @@ export default function PricingSection() {
                     marginBottom: "24px",
                     border: `1px solid ${p.border}`
                   }}>
-                    ⚡ {p.limit}
+                    {p.limit}
                   </div>
 
                   {/* Feature Checklist */}

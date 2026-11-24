@@ -2,10 +2,10 @@ import Hero from "../components/Hero";
 import FeaturesGrid from "../components/FeaturesGrid";
 import FAQAccordion from "../components/FAQAccordion";
 
-export default function Home({ onOpenDemo }) {
+export default function Home() {
   return (
     <main>
-      <Hero onOpenDemo={onOpenDemo} />
+      <Hero />
       <FeaturesGrid />
       <FAQAccordion />
     </main>

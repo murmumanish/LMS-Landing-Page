@@ -21,7 +21,7 @@ export default function PricingPage() {
             Simple & Transparent <span className="gradient-blue">Pricing For Every Library</span>
           </h1>
           <p style={{ color: "#475569", fontSize: "1.15rem", lineHeight: 1.6, marginBottom: "24px" }}>
-            First Three Months Pro Subscription Free * on your real branch. No advance payment or card required.
+            First Three Months Pro Subscription Free * on your real branch (* Only nominal ₹1 secure Razorpay confirmation payment for branch authentication).
           </p>
           <div style={{ display: "flex", justifyContent: "center", gap: "12px", flexWrap: "wrap" }}>
             <Link to="/register" className="btn-primary">
@@ -34,8 +34,8 @@ export default function PricingPage() {
       {/* Subscription Tiers & Features Comparison */}
       <SubscriptionTiers />
 
-      {/* FAQs */}
-      <FAQAccordion />
+      {/* Pricing-Specific FAQs */}
+      <FAQAccordion type="pricing" />
     </div>
   );
 }

@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
+
+const mobileDashboardImg = "https://res.cloudinary.com/da9xdkqvl/image/upload/v1795535954/Modern_Library_Branch_Dashboard_doj4nm.png";
 import { 
   FaPlay, 
-  FaCalendarCheck, 
   FaWhatsapp, 
   FaUsers, 
   FaUserCheck, 
@@ -12,8 +13,6 @@ import {
   FaChair, 
   FaBell, 
   FaSyncAlt, 
-  FaWifi, 
-  FaBatteryFull, 
   FaBolt, 
   FaLock, 
   FaUser, 
@@ -21,11 +20,10 @@ import {
   FaFileAlt,
   FaMoneyBillWave,
   FaThLarge,
-  FaExclamationTriangle,
-  FaQrcode
+  FaExclamationTriangle
 } from "react-icons/fa";
 
-export default function Hero({ onOpenDemo }) {
+export default function Hero() {
   return (
     <section style={{
       position: "relative",
@@ -56,7 +54,7 @@ export default function Hero({ onOpenDemo }) {
           margin: "0 auto 36px",
           lineHeight: 1.6
         }}>
-          Replace messy paper registers. Manage up to  1,000+ students,Make Attendance with QR, multi-shift timings, student admissions, 
+          Replace messy paper registers. Manage up to 1,000+ students, make attendance with QR, multi-shift timings, student admissions, 
           cashier fee collections, and automated WhatsApp dues reminders with zero server lag.
         </p>
 
@@ -114,7 +112,7 @@ export default function Hero({ onOpenDemo }) {
           marginBottom: "46px",
           boxShadow: "0 4px 14px rgba(16, 185, 129, 0.15)"
         }}>
-          <span>🎉 Special Launch Offer:</span>
+          <span>Special Launch Offer:</span>
           <span style={{ color: "#2563eb", fontWeight: "900" }}>First Three Months Pro Subscription Free *</span>
         </div>
 
@@ -168,8 +166,8 @@ export default function Hero({ onOpenDemo }) {
             ========================================================================= */}
         <div className="device-showcase-container">
           
-          {/* LAPTOP MOCKUP FRAME */}
-          <div className="laptop-mockup">
+          {/* LAPTOP MOCKUP FRAME (Desktop/Tablet only, hidden on mobile) */}
+          <div className="laptop-mockup hero-laptop-mockup">
             <div className="laptop-screen-bezel">
               
               {/* Laptop Top Camera & Bezel */}
@@ -302,15 +300,15 @@ export default function Hero({ onOpenDemo }) {
                 </div>
 
                 {/* Right Dashboard Body */}
-                <div style={{ flex: 1, padding: "16px 20px", overflow: "hidden" }}>
+                <div className="hero-dashboard-body" style={{ flex: 1, padding: "16px 20px", overflow: "hidden" }}>
                   
                   {/* Top Header: Date & Plan Status */}
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px", flexWrap: "wrap", gap: "8px" }}>
+                  <div className="hero-dash-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px", flexWrap: "wrap", gap: "8px" }}>
                     <div style={{ fontSize: "0.76rem", color: "#64748b", fontWeight: "600" }}>
                       Saturday, 24 October 2026
                     </div>
 
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
                       <div style={{
                         background: "#ecfdf5",
                         border: "1px solid #a7f3d0",
@@ -344,7 +342,7 @@ export default function Hero({ onOpenDemo }) {
                   </div>
 
                   {/* Welcome Banner */}
-                  <div style={{
+                  <div className="hero-welcome-banner" style={{
                     background: "linear-gradient(135deg, #f5f3ff 0%, #eef2ff 60%, #eff6ff 100%)",
                     border: "1px solid #e0e7ff",
                     borderRadius: "14px",
@@ -365,7 +363,7 @@ export default function Hero({ onOpenDemo }) {
                       </div>
                     </div>
 
-                    <div style={{ display: "flex", gap: "8px" }}>
+                    <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                       <button style={{
                         background: "#2563eb",
                         color: "#ffffff",
@@ -400,7 +398,7 @@ export default function Hero({ onOpenDemo }) {
                   </div>
 
                   {/* 6 Real Metric Summary Cards */}
-                  <div style={{
+                  <div className="hero-metric-grid" style={{
                     display: "grid",
                     gridTemplateColumns: "repeat(3, 1fr)",
                     gap: "10px",
@@ -478,7 +476,7 @@ export default function Hero({ onOpenDemo }) {
                     <div style={{ fontSize: "0.78rem", fontWeight: "800", color: "#0f172a", display: "flex", alignItems: "center", gap: "6px", marginBottom: "8px" }}>
                       <FaBolt style={{ color: "#f59e0b" }} /> Quick Actions
                     </div>
-                    <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "10px" }}>
+                    <div className="hero-quick-actions-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "10px" }}>
                       <div style={{ background: "#ffffff", padding: "10px", borderRadius: "10px", border: "1px solid #e2e8f0" }}>
                         <div style={{ width: "28px", height: "28px", borderRadius: "6px", background: "#f3e8ff", color: "#8b5cf6", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px", marginBottom: "6px" }}>
                           <FaUsers />
@@ -524,217 +522,21 @@ export default function Hero({ onOpenDemo }) {
           </div>
 
           {/* =========================================================================
-              MOBILE PHONE SCREEN MOCKUP (FLOATING OVERLAY)
+              MOBILE PHONE SCREEN MOCKUP (FLOATING OVERLAY ON DESKTOP, PRIMARY ON MOBILE)
               ========================================================================= */}
-          <div className="mobile-mockup-wrapper">
-            <div className="mobile-phone-frame">
-              
-              {/* Dynamic Island Notch */}
-              <div className="mobile-dynamic-island">
-                <div className="mobile-camera-lens"></div>
-              </div>
-
-              {/* Mobile Status Bar */}
-              <div style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: "4px 16px 2px",
-                fontSize: "0.68rem",
-                fontWeight: "700",
-                color: "#0f172a"
-              }}>
-                <span>9:41</span>
-                <div style={{ display: "flex", gap: "5px", alignItems: "center", fontSize: "10px" }}>
-                  <FaWifi />
-                  <FaBatteryFull style={{ fontSize: "12px" }} />
-                </div>
-              </div>
-
-              {/* Mobile App Header */}
-              <div style={{
-                padding: "8px 14px",
-                borderBottom: "1px solid #f1f5f9",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between"
-              }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                  <div style={{
-                    width: "28px",
-                    height: "28px",
-                    borderRadius: "8px",
-                    background: "linear-gradient(135deg, #2563eb, #3b82f6)",
-                    color: "#ffffff",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "0.7rem",
-                    fontWeight: "900"
-                  }}>
-                    ML
-                  </div>
-                  <div style={{ textAlign: "left" }}>
-                    <div style={{ fontSize: "0.76rem", fontWeight: "800", color: "#0f172a", lineHeight: 1.1 }}>
-                      My Library
-                    </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "0.6rem", color: "#059669", fontWeight: "700" }}>
-                      <span className="pulse-dot-green" style={{ width: "5px", height: "5px" }}></span> Live Shift
-                    </div>
-                  </div>
-                </div>
-
-                <div style={{ width: "24px", height: "24px", borderRadius: "50%", background: "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "10px", color: "#475569" }}>
-                  <FaBell />
-                </div>
-              </div>
-
-              {/* Mobile App Content */}
-              <div style={{ padding: "12px 14px", textAlign: "left", background: "#f8fafc" }}>
-                
-                {/* Active Shift Card */}
-                <div style={{
-                  background: "#ffffff",
-                  borderRadius: "12px",
-                  padding: "10px",
-                  border: "1px solid #e2e8f0",
-                  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)",
-                  marginBottom: "10px"
-                }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
-                    <span style={{ fontSize: "0.68rem", fontWeight: "800", color: "#0f172a" }}>
-                      Morning Shift
-                    </span>
-                    <span style={{ fontSize: "0.62rem", background: "#dbeafe", color: "#1d4ed8", padding: "1px 6px", borderRadius: "4px", fontWeight: "700" }}>
-                      06:00 AM - 12:00 PM
-                    </span>
-                  </div>
-
-                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.65rem", color: "#64748b", fontWeight: "600", marginBottom: "4px" }}>
-                    <span>Live Occupancy</span>
-                    <span style={{ color: "#2563eb", fontWeight: "800" }}>84 / 100 Seats</span>
-                  </div>
-
-                  {/* Progress Bar */}
-                  <div style={{ width: "100%", height: "6px", background: "#f1f5f9", borderRadius: "10px", overflow: "hidden" }}>
-                    <div style={{ width: "84%", height: "100%", background: "linear-gradient(90deg, #2563eb, #10b981)", borderRadius: "10px" }}></div>
-                  </div>
-                </div>
-
-                {/* 10 Interactive Live Seats Grid (Mini Map) */}
-                <div style={{
-                  background: "#ffffff",
-                  borderRadius: "12px",
-                  padding: "10px",
-                  border: "1px solid #e2e8f0",
-                  marginBottom: "10px"
-                }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-                    <span style={{ fontSize: "0.68rem", fontWeight: "800", color: "#0f172a" }}>Live Seat Grid</span>
-                    <div style={{ display: "flex", gap: "6px", fontSize: "0.6rem", fontWeight: "700" }}>
-                      <span style={{ color: "#2563eb" }}>● Full</span>
-                      <span style={{ color: "#10b981" }}>● Free</span>
-                    </div>
-                  </div>
-
-                  <div style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(5, 1fr)",
-                    gap: "5px"
-                  }}>
-                    {["A1", "A2", "A3", "A4", "A5", "B1", "B2", "B3", "B4", "B5"].map((seat, idx) => {
-                      const isFree = idx === 3 || idx === 8;
-                      return (
-                        <div
-                          key={seat}
-                          style={{
-                            height: "22px",
-                            borderRadius: "5px",
-                            background: isFree ? "#dcfce7" : "#dbeafe",
-                            border: `1px solid ${isFree ? "#86efac" : "#bfdbfe"}`,
-                            color: isFree ? "#059669" : "#1d4ed8",
-                            fontSize: "0.58rem",
-                            fontWeight: "800",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center"
-                          }}
-                        >
-                          {seat}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* Student Check-in Event Toast */}
-                <div style={{
-                  background: "#ecfdf5",
-                  border: "1px solid #a7f3d0",
-                  borderRadius: "10px",
-                  padding: "8px 10px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  marginBottom: "10px"
-                }}>
-                  <span className="pulse-dot-green" style={{ width: "6px", height: "6px" }}></span>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: "0.66rem", fontWeight: "800", color: "#065f46" }}>
-                      Aryan V. • Seat B-04
-                    </div>
-                    <div style={{ fontSize: "0.58rem", color: "#047857" }}>
-                      Instant QR Entry Logged
-                    </div>
-                  </div>
-                  <FaQrcode style={{ color: "#059669", fontSize: "14px" }} />
-                </div>
-
-                {/* Mobile Quick Action Button */}
-                <button style={{
+          <div className="mobile-mockup-wrapper hero-mobile-mockup-wrapper">
+            <div className="mobile-phone-frame" style={{ background: "#ffffff", padding: "0", lineHeight: 0 }}>
+              <img 
+                src={mobileDashboardImg} 
+                alt="LMS Mobile App Interface" 
+                style={{
                   width: "100%",
-                  background: "linear-gradient(135deg, #2563eb, #1d4ed8)",
-                  color: "#ffffff",
-                  border: "none",
-                  padding: "8px",
-                  borderRadius: "8px",
-                  fontSize: "0.7rem",
-                  fontWeight: "800",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "6px",
-                  cursor: "pointer",
-                  boxShadow: "0 4px 12px rgba(37, 99, 235, 0.3)"
-                }}>
-                  <FaQrcode /> Scan QR Attendance
-                </button>
-
-              </div>
-
-              {/* Mobile Bottom Tab Bar */}
-              <div style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(4, 1fr)",
-                padding: "8px 0 10px",
-                background: "#ffffff",
-                borderTop: "1px solid #f1f5f9",
-                textAlign: "center"
-              }}>
-                <div style={{ color: "#2563eb", fontSize: "0.6rem", fontWeight: "800", display: "flex", flexDirection: "column", alignItems: "center", gap: "2px" }}>
-                  <FaThLarge style={{ fontSize: "11px" }} /> Home
-                </div>
-                <div style={{ color: "#94a3b8", fontSize: "0.6rem", fontWeight: "600", display: "flex", flexDirection: "column", alignItems: "center", gap: "2px" }}>
-                  <FaChair style={{ fontSize: "11px" }} /> Seats
-                </div>
-                <div style={{ color: "#94a3b8", fontSize: "0.6rem", fontWeight: "600", display: "flex", flexDirection: "column", alignItems: "center", gap: "2px" }}>
-                  <FaQrcode style={{ fontSize: "11px" }} /> Scan
-                </div>
-                <div style={{ color: "#94a3b8", fontSize: "0.6rem", fontWeight: "600", display: "flex", flexDirection: "column", alignItems: "center", gap: "2px" }}>
-                  <FaUsers style={{ fontSize: "11px" }} /> Students
-                </div>
-              </div>
-
+                  height: "auto",
+                  display: "block",
+                  borderRadius: "26px",
+                  imageRendering: "-webkit-optimize-contrast"
+                }}
+              />
             </div>
           </div>
 

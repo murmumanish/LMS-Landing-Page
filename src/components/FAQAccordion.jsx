@@ -1,53 +1,93 @@
 import { useState } from "react";
-import { FaChevronDown, FaChevronUp, FaQuestionCircle } from "react-icons/fa";
+import { FaChevronDown, FaChevronUp, FaQuestionCircle, FaTag } from "react-icons/fa";
 
-const faqs = [
+const generalFaqs = [
   {
-    q: "How difficult is it to migrate from physical registers to LMS?",
-    a: "It takes less than 30 minutes! You can upload an Excel sheet with your current students, or simply let walk-in students scan the reception QR code to register themselves. Our team also provides free 1-on-1 assistance over WhatsApp to set up your seat layout."
+    q: "How does the 3-Month Free Trial work? Are there any hidden setup fees?",
+    a: "There are zero setup fees or hidden charges. When you register your library, you receive 3 full months of Pro access. A nominal ₹1 Razorpay transaction is used solely to authenticate your branch credentials and prevent duplicate accounts. After 3 months, you can continue on Basic (₹150/mo) or Pro (₹250/mo), or cancel anytime."
   },
   {
-    q: "Do I need to buy expensive biometric machines or barcode scanners?",
-    a: "Not at all. LMS includes a standalone Public QR Attendance Kiosk (/public-attendance) that works on any standard tablet, old mobile phone, or laptop webcam. Students simply scan their personal QR code or enter their ID to mark entry/exit."
+    q: "How difficult is it to migrate from manual registers or Excel sheets?",
+    a: "It takes less than 30 minutes! You can upload existing student lists or simply display our reception QR code for walk-in students to register their own profiles. Our team also provides free 1-on-1 assistance over WhatsApp (+91 9142025447) to configure your seat grid."
   },
   {
-    q: "Can I customize shifts according to my library's timings?",
-    a: "Yes! You can configure any shift configuration: Morning (e.g. 6 AM to 12 PM), Afternoon (12 PM to 5 PM), Evening (5 PM to 10 PM), Night (10 PM to 6 AM), or 24-Hour dedicated seats with custom pricing for each slot."
+    q: "Do I need expensive biometric machines or barcode scanners for attendance?",
+    a: "No extra hardware is needed. LMS includes a dedicated Public Attendance Kiosk that runs directly in any browser on an old phone, tablet, or laptop. Students simply scan their unique QR ID card or enter their mobile number to record their entry and exit times instantly."
   },
   {
-    q: "How does the automated WhatsApp fee reminder system work?",
-    a: "LMS automatically tracks validities. 3 days before a student's validity expires, an automated polite WhatsApp payment reminder is generated with the renewal fee amount and library counter details. No uncomfortable manual confrontations needed."
+    q: "Can I customize shifts and timings according to our library slots?",
+    a: "Yes, fully customizable! Configure morning (e.g. 6 AM – 12 PM), afternoon (12 PM – 5 PM), evening (5 PM – 10 PM), night (10 PM – 6 AM), or full-day 24/7 dedicated reserved seats with independent pricing structures for each slot."
   },
   {
-    q: "What security features protect my library data from staff misuse?",
-    a: "LMS includes strict Single-Device session enforcement. Staff can only access staff-permitted pages (Cashier & Attendance) and cannot log in from unauthorized secondary devices or change library owner credentials."
+    q: "How do automated WhatsApp fee reminders work?",
+    a: "LMS tracks renewal dates automatically. 3 days before a student's validity expires, an automated, polite WhatsApp payment reminder is prepared with the renewal amount, due date, and your library UPI QR code—eliminating awkward manual confrontations."
   },
   {
-    q: "Can I manage 2 or more library branches from one account?",
-    a: "Yes. Our Enterprise plan includes a Multi-Branch Console where you can switch branches in 1 click, view consolidated revenue analytics, and assign branch-specific staff."
+    q: "How is my library's financial and student data secured?",
+    a: "Your data is protected by enterprise-grade SSL encryption and hosted on high-availability cloud servers. Strict single-device session locking ensures staff can only access cashier and attendance modes on authorized branch devices, keeping owner settings safe."
+  },
+  {
+    q: "Can I manage multiple branches from a single account?",
+    a: "Yes! Our Pro plan includes multi-branch support. You can switch between different branches with one click, inspect seat occupancy across locations, and view consolidated monthly revenue from a centralized master console."
   }
 ];
 
-export default function FAQAccordion() {
+const pricingFaqs = [
+  {
+    q: "What is the difference between the Basic and Pro plans?",
+    a: "The Basic Plan (₹150/month) is ideal for single-room libraries up to 100 students, including digital seat layout, QR attendance, and basic fee receipts. The Pro Plan (₹250/month) supports up to 1,000 students, automated WhatsApp fee alerts, multi-branch switching, advanced revenue analytics, and priority 24/7 technical support."
+  },
+  {
+    q: "How much do I save with Quarterly, Half-Yearly, and Annual billing?",
+    a: "You save significantly on longer billing cycles! Basic Plan: Monthly ₹150 | Quarterly ₹400 (Save ₹50) | Half-Yearly ₹800 (Save ₹100) | Annual ₹1,500 (Save ₹300, 17% OFF). Pro Plan: Monthly ₹250 | Quarterly ₹700 (Save ₹50) | Half-Yearly ₹1,300 (Save ₹200) | Annual ₹2,500 (Save ₹500, 17% OFF)."
+  },
+  {
+    q: "Why is there a nominal ₹1 charge for the 3-Month Free Trial?",
+    a: "The ₹1 payment is processed via Razorpay's secure payment gateway strictly for fraud prevention, branch bank/UPI authentication, and duplicate account protection. It ensures that only legitimate library owners access the 3-Month Pro complimentary tier."
+  },
+  {
+    q: "Will I be automatically charged after the 3-Month Free Trial ends?",
+    a: "No, there are no hidden auto-debits without your explicit approval. Before your trial period concludes, you will receive an alert in your admin dashboard giving you the option to select either the Basic or Pro plan with your preferred monthly, quarterly, or annual billing cycle."
+  },
+  {
+    q: "Can I upgrade, downgrade, or switch billing cycles anytime?",
+    a: "Yes, absolutely. You can upgrade from Basic to Pro or switch from monthly to annual billing at any point from your Admin Dashboard's Subscription section. Your existing balance will be automatically adjusted."
+  },
+  {
+    q: "What payment methods are supported for subscription renewals?",
+    a: "We accept all major Indian payment methods via Razorpay, including UPI (Google Pay, PhonePe, Paytm, BHIM), Net Banking across 50+ banks, Credit Cards, and Debit Cards. Instant GST-compliant tax invoices are automatically generated for every transaction."
+  },
+  {
+    q: "Is there any long-term contract or cancellation penalty?",
+    a: "No contracts and no cancellation fees. You have complete freedom to use the platform on a month-to-month or cycle basis. You can export all your student and fee records to Excel/PDF at any time with a single click."
+  }
+];
+
+export default function FAQAccordion({ type = "general" }) {
   const [openIndex, setOpenIndex] = useState(0);
+
+  const isPricing = type === "pricing";
+  const faqs = isPricing ? pricingFaqs : generalFaqs;
 
   const toggle = (i) => {
     setOpenIndex(openIndex === i ? null : i);
   };
 
   return (
-    <section className="section-padding" style={{ background: "#f8fafc" }}>
+    <section className="section-padding" style={{ background: isPricing ? "#ffffff" : "#f8fafc" }}>
       <div className="container" style={{ maxWidth: "900px" }}>
         {/* Section Heading */}
         <div style={{ textAlign: "center", marginBottom: "48px" }}>
-          <div className="badge-blue" style={{ marginBottom: "14px" }}>
-            <FaQuestionCircle /> Frequently Asked Questions
+          <div className={isPricing ? "badge-green" : "badge-blue"} style={{ marginBottom: "14px" }}>
+            {isPricing ? <FaTag /> : <FaQuestionCircle />} {isPricing ? "Pricing & Subscription FAQs" : "Frequently Asked Questions"}
           </div>
           <h2 style={{ fontSize: "clamp(2rem, 3.5vw, 2.8rem)", marginBottom: "14px", color: "#0f172a" }}>
-            Everything You Need to Know
+            {isPricing ? "Got Questions About Our Pricing & Plans?" : "Everything You Need to Know"}
           </h2>
           <p style={{ color: "#475569", fontSize: "1rem", lineHeight: 1.6 }}>
-            Got questions about onboarding, shifts, hardware, or WhatsApp alerts? We have answers.
+            {isPricing
+              ? "Clear answers regarding our billing cycles, 3-month trial activation, payment methods, and plan differences."
+              : "Got questions about onboarding, shifts, QR attendance, or WhatsApp alerts? We have answers."}
           </p>
         </div>
 
@@ -78,7 +118,8 @@ export default function FAQAccordion() {
                     textAlign: "left",
                     color: isOpen ? "#2563eb" : "#0f172a",
                     fontWeight: "800",
-                    fontSize: "1.05rem"
+                    fontSize: "1.05rem",
+                    cursor: "pointer"
                   }}
                 >
                   <span>{f.q}</span>

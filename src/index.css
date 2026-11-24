@@ -934,3 +934,168 @@ video {
     margin-bottom: 6px;
   }
 }
+
+/* =========================================================================
+   COMPREHENSIVE RESPONSIVE STYLES FOR HOME & FEATURES GRAPHICS
+   ========================================================================= */
+
+/* Hero Dashboard Screen Mockup */
+@media (max-width: 768px) {
+  .hero-laptop-mockup {
+    display: none !important;
+  }
+
+  .hero-mobile-mockup-wrapper {
+    position: relative !important;
+    right: auto !important;
+    bottom: auto !important;
+    margin: 16px auto 0 !important;
+    max-width: 300px !important;
+    width: 82% !important;
+    animation: none !important;
+  }
+}
+
+.hero-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.hero-quick-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+@media (max-width: 900px) {
+  .hero-metric-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .hero-quick-actions-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 680px) {
+  .laptop-screen-bezel {
+    border-width: 6px !important;
+    border-radius: 14px 14px 0 0 !important;
+  }
+  .laptop-camera-bar {
+    height: 12px !important;
+  }
+  .laptop-base-chassis {
+    height: 12px !important;
+    margin: 0 -8px !important;
+  }
+  .hero-dashboard-body {
+    padding: 12px 10px !important;
+  }
+  .hero-welcome-banner {
+    padding: 10px 12px !important;
+  }
+  .hero-welcome-banner > div:first-child {
+    margin-bottom: 8px;
+  }
+  .hero-welcome-banner button {
+    padding: 6px 10px !important;
+    font-size: 0.7rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-metric-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 6px !important;
+  }
+  .hero-metric-grid > div {
+    padding: 8px !important;
+  }
+  .hero-metric-grid > div > div:last-child > div:first-child {
+    font-size: 0.55rem !important;
+  }
+  .hero-metric-grid > div > div:last-child > div:last-child {
+    font-size: 0.95rem !important;
+  }
+  .hero-quick-actions-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 6px !important;
+  }
+  .hero-quick-actions-grid > div {
+    padding: 8px !important;
+  }
+}
+
+/* Feature Workflow Guide Tabs & Graphics */
+@media (max-width: 768px) {
+  /* On mobile screens: hide laptop frame, camera, browser bar, base chassis and display only pure crisp screenshot image */
+  .workflow-laptop-mockup .laptop-camera-bar,
+  .workflow-laptop-mockup .laptop-browser-bar,
+  .workflow-laptop-mockup .laptop-base-chassis {
+    display: none !important;
+  }
+
+  .workflow-laptop-mockup .workflow-screen-bezel {
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 14px !important;
+    background: #ffffff !important;
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.08) !important;
+    overflow: hidden !important;
+  }
+
+  .workflow-laptop-mockup .workflow-screen-image-wrap img {
+    border-radius: 12px !important;
+  }
+}
+
+@media (max-width: 860px) {
+  .workflow-tabs-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .workflow-tabs-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+    margin-bottom: 24px !important;
+  }
+  .workflow-card-body {
+    padding: 22px 16px !important;
+  }
+  .workflow-capabilities-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .workflow-tabs-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Features Grid */
+@media (max-width: 640px) {
+  .features-main-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+  .features-main-grid .white-card {
+    padding: 22px 18px !important;
+  }
+}
+
+/* Revenue Calculator */
+@media (max-width: 600px) {
+  .calc-white-card {
+    padding: 24px 16px !important;
+  }
+  .calc-shift-buttons {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+}
+

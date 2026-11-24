@@ -24,7 +24,7 @@ export default function AboutUs() {
           </p>
 
           <div style={{ display: "flex", justifyContent: "center", gap: "14px", flexWrap: "wrap" }}>
-            <Link to="/demo" className="btn-primary">
+            <Link to="/contact-us?topic=demo" className="btn-primary">
               <FaCalendarCheck /> Book Free Onboarding Demo
             </Link>
             <a
@@ -137,9 +137,9 @@ export default function AboutUs() {
                     3
                   </div>
                   <div>
-                    <h4 style={{ fontSize: "0.98rem", fontWeight: "800", color: "#92400e", marginBottom: "4px" }}>Dual Attendance Kiosk</h4>
+                    <h4 style={{ fontSize: "0.98rem", fontWeight: "800", color: "#92400e", marginBottom: "4px" }}>Dual Attendance System</h4>
                     <p style={{ fontSize: "0.85rem", color: "#64748b", lineHeight: 1.5 }}>
-                      Staff check-in desk plus standalone public tablet kiosk for sub-second student QR check-in.
+                      Staff check-in desk plus standalone public tablet station for sub-second student QR check-in.
                     </p>
                   </div>
                 </div>
@@ -207,7 +207,7 @@ export default function AboutUs() {
               {
                 feature: "Daily Attendance Logging",
                 manual: "Long queue; fake proxy entries in notebook",
-                lms: "Sub-second QR Kiosk with live head count"
+                lms: "Sub-second QR check-in with live head count"
               },
               {
                 feature: "Cashier Desk & Financials",

@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
+import { postJson } from "../lib/api";
 import {
   FaBuilding,
   FaUser,
@@ -46,13 +47,6 @@ const INDIAN_STATES = [
   "West Bengal"
 ];
 
-const CAPACITY_OPTIONS = [
-  { value: "50", label: "50 Students", desc: "Starter Study Space / Reading Room", badge: "STARTER" },
-  { value: "200", label: "200 Students", desc: "Standard Medium Library", badge: "POPULAR" },
-  { value: "500", label: "500 Students", desc: "High-Capacity Academic Hub", badge: "HIGH-CAPACITY" },
-  { value: "Unlimited", label: "Unlimited (500+)", desc: "Enterprise & Multi-Branch Chain", badge: "ENTERPRISE" }
-];
-
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
     ownerName: "",
@@ -63,7 +57,6 @@ export default function RegisterPage() {
     cityName: "",
     stateName: "Uttar Pradesh",
     pincode: "",
-    capacity: "200",
     description: ""
   });
 
@@ -75,6 +68,7 @@ export default function RegisterPage() {
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [serverNotice, setServerNotice] = useState("");
+  const [submitError, setSubmitError] = useState("");
   const [regId, setRegId] = useState("");
   const [submissionDate, setSubmissionDate] = useState("");
 
@@ -114,8 +108,8 @@ export default function RegisterPage() {
       alert("Please enter Owner Name (at least 2 characters).");
       return;
     }
-    if (!/^[a-zA-Z\s.]+$/.test(cleanOwner)) {
-      alert("Owner Name should only contain letters and spaces.");
+    if (!/^[a-zA-Z\s.'-]+$/.test(cleanOwner)) {
+      alert("Owner Name should only contain letters, spaces, apostrophes or hyphens.");
       return;
     }
     if (cleanOwner.length > 60) {
@@ -169,8 +163,8 @@ export default function RegisterPage() {
       alert("Please enter City Name (at least 2 characters).");
       return;
     }
-    if (!/^[a-zA-Z\s.-]+$/.test(cleanCity)) {
-      alert("City Name should only contain alphabetic letters and spaces.");
+    if (!/^[a-zA-Z\s.'-]+$/.test(cleanCity)) {
+      alert("City Name should only contain letters, spaces, apostrophes or hyphens.");
       return;
     }
     if (cleanCity.length > 50) {
@@ -203,7 +197,10 @@ export default function RegisterPage() {
       return;
     }
 
+    if (isSubmitting) return;
+
     setIsSubmitting(true);
+    setSubmitError("");
 
     const uniqueId = `LMS-REG-${new Date().getFullYear()}-${Math.floor(10000 + Math.random() * 90000)}`;
     const nowTime = new Date().toLocaleString("en-IN", {
@@ -216,7 +213,7 @@ export default function RegisterPage() {
     });
 
     const fullAddress = [formData.addressLine, formData.stateName, formData.pincode].filter(Boolean).join(", ");
-    const capacitySeats = formData.capacity === "Unlimited" ? 1000 : Number(formData.capacity || 100);
+    const capacitySeats = 1000;
 
     // Payload for libraryregister collection
     // Note: Library Photo and Description are omitted (not saved) as requested
@@ -233,63 +230,50 @@ export default function RegisterPage() {
       tier: "FREE"
     };
 
-    let assignedId = uniqueId;
-
     try {
-      const response = await fetch("/api/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload)
-      });
+      const result = await postJson("/api/register", payload);
+      const assignedId = result.id ? `LMS-REG-${result.id}` : uniqueId;
 
-      const result = await response.json();
+      setRegId(assignedId);
+      setSubmissionDate(nowTime);
+      setServerNotice("Registration submitted successfully! Our onboarding team will verify and activate your branch portal.");
 
-      if (response.ok && result.success) {
-        if (result.id) {
-          assignedId = `LMS-REG-${result.id}`;
-        }
-        setServerNotice("Registration saved to libraryregister collection successfully!");
-      } else {
-        console.warn("Backend registration response:", result.message);
-        if (result.message) {
-          setServerNotice(result.message);
-        }
+      // Save registration acknowledgment locally without photo and without description
+      const registrationRecord = {
+        regId: assignedId,
+        submittedAt: nowTime,
+        ownerName: cleanOwner,
+        libraryName: cleanLib,
+        email: cleanGmail,
+        phone: cleanPhone,
+        city: cleanCity,
+        state: formData.stateName,
+        pincode: cleanPin,
+        activeStudentsLimit: capacitySeats
+      };
+
+      try {
+        const stored = JSON.parse(localStorage.getItem("lms_registered_libraries") || "[]");
+        const history = Array.isArray(stored) ? stored : [];
+        history.push(registrationRecord);
+        localStorage.setItem("lms_registered_libraries", JSON.stringify(history.slice(-20)));
+        // Kept for backward compatibility with older versions of this page.
+        localStorage.setItem("lms_registered_library", JSON.stringify(registrationRecord));
+      } catch (err) {
+        console.log("Local storage save error:", err);
       }
+
+      setSubmitted(true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
-      console.warn("API request failed (server might be offline or starting):", err);
-      setServerNotice("Note: Server is offline or starting. Application recorded locally.");
+      console.warn("Registration failed:", err);
+      setSubmitError(
+        err.message || "Could not submit your registration right now. Please check your connection and try again."
+      );
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } finally {
       setIsSubmitting(false);
     }
-
-    setRegId(assignedId);
-    setSubmissionDate(nowTime);
-
-    // Save registration acknowledgment locally without photo and without description
-    const registrationRecord = {
-      regId: assignedId,
-      submittedAt: nowTime,
-      ownerName: cleanOwner,
-      libraryName: cleanLib,
-      email: cleanGmail,
-      phone: cleanPhone,
-      city: cleanCity,
-      state: formData.stateName,
-      pincode: cleanPin,
-      capacity: formData.capacity,
-      activeStudentsLimit: capacitySeats
-    };
-
-    try {
-      localStorage.setItem("lms_registered_library", JSON.stringify(registrationRecord));
-    } catch (err) {
-      console.log("Local storage save error:", err);
-    }
-
-    setSubmitted(true);
-    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const openWhatsAppConfirmation = () => {
@@ -298,17 +282,16 @@ export default function RegisterPage() {
       `━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
       `*Application ID:* ${regId}\n` +
       `*Date:* ${submissionDate}\n\n` +
-      `👤 *Owner Name:* ${formData.ownerName}\n` +
-      `📚 *Library Name:* ${formData.libraryName}\n` +
-      `📧 *Gmail ID:* ${formData.gmail}\n` +
-      `📞 *WhatsApp:* ${formData.phone}\n` +
-      `\n📍 *ADDRESS DETAILS:*\n` +
+      ` *Owner Name:* ${formData.ownerName}\n` +
+      ` *Library Name:* ${formData.libraryName}\n` +
+      ` *Gmail ID:* ${formData.gmail}\n` +
+      ` *WhatsApp:* ${formData.phone}\n` +
+      `\n *ADDRESS DETAILS:*\n` +
       (formData.addressLine ? `• Address: ${formData.addressLine}\n` : "") +
       `• City: ${formData.cityName}\n` +
       `• State: ${formData.stateName}\n` +
       `• Pincode: ${formData.pincode}\n` +
-      `\n🪑 *STUDENT CAPACITY:* ${formData.capacity} Students\n` +
-      `📸 *Library Photo:* ${libraryPhoto ? libraryPhoto.name : "Attached / Selected"}\n` +
+      ` *Library Photo:* ${libraryPhoto ? libraryPhoto.name : "Attached / Selected"}\n` +
       (formData.description.trim() ? `\n📝 *Description:*\n${formData.description}\n` : "") +
       `━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
       `Please review and activate my library portal credentials!`
@@ -348,7 +331,7 @@ export default function RegisterPage() {
               <FaCheckCircle /> 100% Free Initial Registration
             </span>
             <span style={{ display: "flex", alignItems: "center", gap: "6px", color: "#2563eb" }}>
-              <FaCheckCircle /> First Three Months Pro Subscription Free *
+              <FaCheckCircle /> First Three Months Pro Subscription Free * (₹1 Secure Razorpay Confirmation)
             </span>
             <span style={{ display: "flex", alignItems: "center", gap: "6px", color: "#d97706" }}>
               <FaClock /> Fast 30-Min Support Onboarding
@@ -373,6 +356,24 @@ export default function RegisterPage() {
               </div>
 
               <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
+                {submitError && (
+                  <div
+                    role="alert"
+                    style={{
+                      background: "#fef2f2",
+                      border: "1px solid #fecaca",
+                      color: "#b91c1c",
+                      padding: "14px 18px",
+                      borderRadius: "12px",
+                      fontSize: "0.9rem",
+                      fontWeight: "600",
+                      lineHeight: 1.5
+                    }}
+                  >
+                    {submitError}
+                  </div>
+                )}
+
                 {/* ========================================================= */}
                 {/* SECTION 1: OWNER & LIBRARY CORE IDENTITY */}
                 {/* ========================================================= */}
@@ -502,81 +503,7 @@ export default function RegisterPage() {
                 </div>
 
                 {/* ========================================================= */}
-                {/* SECTION 2: STUDENT CAPACITY SELECTION */}
-                {/* ========================================================= */}
-                <div style={{ paddingTop: "10px", borderTop: "1px dashed var(--border-subtle)" }}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "8px", marginBottom: "16px" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                      <div style={{
-                        width: "32px", height: "32px", borderRadius: "8px",
-                        background: "#ecfdf5", color: "#059669",
-                        display: "flex", alignItems: "center", justifyContent: "center",
-                        fontWeight: "800", fontSize: "14px"
-                      }}>
-                        2
-                      </div>
-                      <h3 style={{ fontSize: "1.15rem", fontWeight: "800", color: "#0f172a" }}>
-                        Student Capacity (Seats) <span style={{ color: "#ef4444" }}>*</span>
-                      </h3>
-                    </div>
-                    <span style={{ fontSize: "0.8rem", color: "#64748b" }}>
-                      Select your physical seat limit
-                    </span>
-                  </div>
-
-                  <div style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-                    gap: "14px"
-                  }}>
-                    {CAPACITY_OPTIONS.map((opt) => {
-                      const isSelected = formData.capacity === opt.value;
-                      return (
-                        <div
-                          key={opt.value}
-                          onClick={() => setFormData({ ...formData, capacity: opt.value })}
-                          style={{
-                            padding: "18px 16px",
-                            borderRadius: "14px",
-                            border: `2px solid ${isSelected ? "#2563eb" : "var(--border-subtle)"}`,
-                            background: isSelected ? "#eff6ff" : "#ffffff",
-                            cursor: "pointer",
-                            transition: "all 0.2s ease",
-                            display: "flex",
-                            flexDirection: "column",
-                            justifyContent: "space-between",
-                            position: "relative",
-                            boxShadow: isSelected ? "0 8px 20px rgba(37,99,235,0.12)" : "none"
-                          }}
-                        >
-                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px" }}>
-                            <span style={{
-                              fontSize: "0.68rem",
-                              fontWeight: "800",
-                              padding: "2px 8px",
-                              borderRadius: "6px",
-                              background: isSelected ? "#2563eb" : "#f1f5f9",
-                              color: isSelected ? "#ffffff" : "#64748b"
-                            }}>
-                              {opt.badge}
-                            </span>
-                            {isSelected && <FaCheckCircle style={{ color: "#2563eb", fontSize: "18px" }} />}
-                          </div>
-
-                          <div style={{ fontSize: "1.25rem", fontWeight: "900", color: isSelected ? "#1d4ed8" : "#0f172a", marginBottom: "4px" }}>
-                            {opt.label}
-                          </div>
-                          <div style={{ fontSize: "0.78rem", color: "#64748b" }}>
-                            {opt.desc}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* ========================================================= */}
-                {/* SECTION 3: ADDRESS DETAILS */}
+                {/* SECTION 2: ADDRESS DETAILS */}
                 {/* ========================================================= */}
                 <div style={{ paddingTop: "10px", borderTop: "1px dashed var(--border-subtle)" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "18px" }}>
@@ -586,7 +513,7 @@ export default function RegisterPage() {
                       display: "flex", alignItems: "center", justifyContent: "center",
                       fontWeight: "800", fontSize: "14px"
                     }}>
-                      3
+                      2
                     </div>
                     <div>
                       <h3 style={{ fontSize: "1.15rem", fontWeight: "800", color: "#0f172a" }}>
@@ -702,7 +629,7 @@ export default function RegisterPage() {
                 </div>
 
                 {/* ========================================================= */}
-                {/* SECTION 4: CLEAR PICTURE OF THE LIBRARY */}
+                {/* SECTION 3: CLEAR PICTURE OF THE LIBRARY */}
                 {/* ========================================================= */}
                 <div style={{ paddingTop: "10px", borderTop: "1px dashed var(--border-subtle)" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
@@ -712,7 +639,7 @@ export default function RegisterPage() {
                       display: "flex", alignItems: "center", justifyContent: "center",
                       fontWeight: "800", fontSize: "14px"
                     }}>
-                      4
+                      3
                     </div>
                     <div>
                       <h3 style={{ fontSize: "1.15rem", fontWeight: "800", color: "#0f172a" }}>
@@ -820,7 +747,7 @@ export default function RegisterPage() {
                 </div>
 
                 {/* ========================================================= */}
-                {/* SECTION 5: LIBRARY DESCRIPTION */}
+                {/* SECTION 4: LIBRARY DESCRIPTION */}
                 {/* ========================================================= */}
                 <div style={{ paddingTop: "10px", borderTop: "1px dashed var(--border-subtle)" }}>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px", flexWrap: "wrap", gap: "8px" }}>
@@ -831,7 +758,7 @@ export default function RegisterPage() {
                         display: "flex", alignItems: "center", justifyContent: "center",
                         fontWeight: "800", fontSize: "14px"
                       }}>
-                        5
+                        4
                       </div>
                       <div>
                         <h3 style={{ fontSize: "1.15rem", fontWeight: "800", color: "#0f172a" }}>
@@ -919,6 +846,9 @@ export default function RegisterPage() {
                   >
                     <FaBuilding /> {isSubmitting ? "Registering & Saving Data..." : "Complete Library Registration & Activate Portal"}
                   </button>
+                  <p style={{ textAlign: "center", fontSize: "0.82rem", color: "#64748b", margin: "12px 0 0" }}>
+                    * Note: A nominal ₹1 secure Razorpay verification payment is charged during trial activation for account authentication and branch confirmation.
+                  </p>
                 </div>
               </form>
             </div>
@@ -927,7 +857,43 @@ export default function RegisterPage() {
             /* SUBMISSION SUCCESS & REGISTRATION ACKNOWLEDGMENT SLIP */
             /* ========================================================= */
             <div className="white-card" style={{ padding: "40px", borderTop: "6px solid #10b981" }}>
-              <div style={{ textAlign: "center", marginBottom: "32px" }}>
+              <style>{`
+                @media print {
+                  body {
+                    background: #ffffff !important;
+                  }
+                  /* Hide everything except the receipt slip */
+                  header, footer, nav, .floating-whatsapp, .no-print, .btn-whatsapp {
+                    display: none !important;
+                  }
+                  body * {
+                    visibility: hidden;
+                  }
+                  #registration-receipt-slip, #registration-receipt-slip * {
+                    visibility: visible;
+                  }
+                  #registration-receipt-slip {
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    width: 100% !important;
+                    margin: 0 !important;
+                    padding: 20px 24px !important;
+                    background: #ffffff !important;
+                    border: 2px solid #2563eb !important;
+                    border-radius: 8px !important;
+                    box-shadow: none !important;
+                    color: #0f172a !important;
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                  }
+                  .print-watermark {
+                    display: block !important;
+                  }
+                }
+              `}</style>
+
+              <div className="no-print" style={{ textAlign: "center", marginBottom: "32px" }}>
                 <div style={{
                   width: "80px",
                   height: "80px",
@@ -950,72 +916,131 @@ export default function RegisterPage() {
                   Welcome to LMS by Study Guru, {formData.ownerName}!
                 </h2>
                 <p style={{ color: "#475569", fontSize: "1.02rem", maxWidth: "620px", margin: "0 auto" }}>
-                  Your library registration has been logged in our onboarding queue. We will verify your details and activate your branch portal within 30 minutes.
+                  Your registration details have been received and are under review. Once verified, you will receive an official approval email with your dedicated Admin Portal Link and 3-Month Free Trial Coupon Code.
                 </p>
               </div>
 
-              {/* Registration Slip Card */}
-              <div style={{
-                background: "#f8fafc",
-                borderRadius: "16px",
-                border: "1.5px solid #bfdbfe",
-                padding: "28px",
-                marginBottom: "32px"
-              }}>
+              {/* Registration Slip Card (Printable / PDF / Photo Slip) */}
+              <div
+                id="registration-receipt-slip"
+                style={{
+                  background: "#f8fafc",
+                  borderRadius: "16px",
+                  border: "2px solid #bfdbfe",
+                  padding: "30px",
+                  marginBottom: "32px",
+                  boxShadow: "0 4px 20px rgba(37, 99, 235, 0.08)"
+                }}
+              >
+                {/* Official Receipt Slip Header */}
                 <div style={{
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  borderBottom: "1px solid var(--border-subtle)",
-                  paddingBottom: "14px",
-                  marginBottom: "20px",
+                  borderBottom: "2px solid #e2e8f0",
+                  paddingBottom: "18px",
+                  marginBottom: "22px",
                   flexWrap: "wrap",
-                  gap: "10px"
+                  gap: "14px"
                 }}>
-                  <div>
-                    <span style={{ fontSize: "0.75rem", fontWeight: "700", color: "#64748b" }}>APPLICATION ID</span>
-                    <div style={{ fontSize: "1.3rem", fontWeight: "900", color: "#2563eb" }}>{regId}</div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                    <div style={{
+                      width: "44px",
+                      height: "44px",
+                      borderRadius: "10px",
+                      background: "#2563eb",
+                      color: "#ffffff",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "20px"
+                    }}>
+                      <FaBuilding />
+                    </div>
+                    <div>
+                      <div style={{ fontSize: "1.25rem", fontWeight: "900", color: "#0f172a", letterSpacing: "-0.02em" }}>
+                        LMS by Study Guru
+                      </div>
+                      <div style={{ fontSize: "0.82rem", color: "#64748b", fontWeight: "600" }}>
+                        Official Library Registration Acknowledgment Slip
+                      </div>
+                    </div>
                   </div>
+
                   <div style={{ textAlign: "right" }}>
-                    <span style={{ fontSize: "0.75rem", fontWeight: "700", color: "#64748b" }}>STATUS</span>
-                    <div style={{ fontSize: "0.95rem", fontWeight: "800", color: "#16a34a" }}>
+                    <span style={{ fontSize: "0.72rem", fontWeight: "800", color: "#64748b", letterSpacing: "0.06em", display: "block" }}>
+                      APPLICATION ID
+                    </span>
+                    <div style={{ fontSize: "1.35rem", fontWeight: "900", color: "#2563eb", fontFamily: "monospace" }}>
+                      {regId}
+                    </div>
+                    <div style={{ fontSize: "0.85rem", fontWeight: "800", color: "#16a34a", marginTop: "2px" }}>
                       ● Verification in Progress
                     </div>
                   </div>
                 </div>
 
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "16px", fontSize: "0.9rem" }}>
+                {/* Library & Owner Details Grid */}
+                <div style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                  gap: "16px",
+                  fontSize: "0.92rem",
+                  background: "#ffffff",
+                  padding: "20px",
+                  borderRadius: "12px",
+                  border: "1px solid #e2e8f0",
+                  marginBottom: "24px"
+                }}>
                   <div>
-                    <span style={{ color: "#64748b", fontSize: "0.8rem", display: "block" }}>Library Name:</span>
-                    <strong style={{ color: "#0f172a" }}>{formData.libraryName}</strong>
+                    <span style={{ color: "#64748b", fontSize: "0.78rem", fontWeight: "700", display: "block", textTransform: "uppercase" }}>
+                      Library / Branch Name
+                    </span>
+                    <strong style={{ color: "#0f172a", fontSize: "1rem" }}>{formData.libraryName}</strong>
                   </div>
                   <div>
-                    <span style={{ color: "#64748b", fontSize: "0.8rem", display: "block" }}>Owner Name:</span>
-                    <strong style={{ color: "#0f172a" }}>{formData.ownerName}</strong>
+                    <span style={{ color: "#64748b", fontSize: "0.78rem", fontWeight: "700", display: "block", textTransform: "uppercase" }}>
+                      Authorized Owner / Admin
+                    </span>
+                    <strong style={{ color: "#0f172a", fontSize: "1rem" }}>{formData.ownerName}</strong>
                   </div>
                   <div>
-                    <span style={{ color: "#64748b", fontSize: "0.8rem", display: "block" }}>Gmail ID:</span>
-                    <strong style={{ color: "#0f172a" }}>{formData.gmail}</strong>
+                    <span style={{ color: "#64748b", fontSize: "0.78rem", fontWeight: "700", display: "block", textTransform: "uppercase" }}>
+                      Registered Gmail ID
+                    </span>
+                    <strong style={{ color: "#2563eb", fontSize: "0.95rem" }}>{formData.gmail}</strong>
                   </div>
                   <div>
-                    <span style={{ color: "#64748b", fontSize: "0.8rem", display: "block" }}>WhatsApp Number:</span>
+                    <span style={{ color: "#64748b", fontSize: "0.78rem", fontWeight: "700", display: "block", textTransform: "uppercase" }}>
+                      WhatsApp Contact Number
+                    </span>
                     <strong style={{ color: "#0f172a" }}>+91 {formData.phone}</strong>
                   </div>
                   <div>
-                    <span style={{ color: "#64748b", fontSize: "0.8rem", display: "block" }}>Student Capacity:</span>
-                    <strong style={{ color: "#2563eb" }}>{formData.capacity} Students</strong>
+                    <span style={{ color: "#64748b", fontSize: "0.78rem", fontWeight: "700", display: "block", textTransform: "uppercase" }}>
+                      Branch Location
+                    </span>
+                    <strong style={{ color: "#0f172a" }}>
+                      {formData.cityName}, {formData.stateName} {formData.pincode ? `(${formData.pincode})` : ""}
+                    </strong>
                   </div>
                   <div>
-                    <span style={{ color: "#64748b", fontSize: "0.8rem", display: "block" }}>City & State:</span>
-                    <strong style={{ color: "#0f172a" }}>{formData.cityName}, {formData.stateName} ({formData.pincode})</strong>
+                    <span style={{ color: "#64748b", fontSize: "0.78rem", fontWeight: "700", display: "block", textTransform: "uppercase" }}>
+                      Active Students Capacity
+                    </span>
+                    <strong style={{ color: "#0f172a" }}>{formData.capacity} Seats Quota</strong>
                   </div>
                   <div>
-                    <span style={{ color: "#64748b", fontSize: "0.8rem", display: "block" }}>Database Collection:</span>
-                    <strong style={{ color: "#16a34a" }}>libraryregister</strong>
-                  </div>
-                  <div>
-                    <span style={{ color: "#64748b", fontSize: "0.8rem", display: "block" }}>Submission Time:</span>
+                    <span style={{ color: "#64748b", fontSize: "0.78rem", fontWeight: "700", display: "block", textTransform: "uppercase" }}>
+                      Submission Timestamp
+                    </span>
                     <strong style={{ color: "#0f172a" }}>{submissionDate}</strong>
+                  </div>
+                  <div>
+                    <span style={{ color: "#64748b", fontSize: "0.78rem", fontWeight: "700", display: "block", textTransform: "uppercase" }}>
+                      Selected Plan
+                    </span>
+                    <strong style={{ color: "#16a34a" }}>3-Month Free Trial (₹1 Verification)</strong>
                   </div>
                   {serverNotice && (
                     <div style={{ gridColumn: "1 / -1", marginTop: "4px" }}>
@@ -1025,10 +1050,74 @@ export default function RegisterPage() {
                     </div>
                   )}
                 </div>
+
+                {/* Important Onboarding Instructions Box */}
+                <div style={{
+                  background: "#eff6ff",
+                  border: "1.5px solid #93c5fd",
+                  borderRadius: "12px",
+                  padding: "20px 24px",
+                  marginBottom: "16px"
+                }}>
+                  <div style={{
+                    fontSize: "0.95rem",
+                    fontWeight: "900",
+                    color: "#1e40af",
+                    marginBottom: "12px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px"
+                  }}>
+                    <FaCheckCircle style={{ color: "#2563eb" }} />
+                    NEXT STEPS & ACTIVATION INSTRUCTIONS:
+                  </div>
+
+                  <ul style={{
+                    margin: 0,
+                    paddingLeft: "20px",
+                    color: "#1e293b",
+                    fontSize: "0.88rem",
+                    lineHeight: "1.75"
+                  }}>
+                    <li>
+                      <strong>Approval Email on Registered Gmail:</strong> Following verification by our onboarding team, an official approval notification will be dispatched to your registered Gmail address (<strong>{formData.gmail}</strong>).
+                    </li>
+                    <li>
+                      <strong>Admin Portal Login Link:</strong> The approval email includes direct access credentials and the portal URL to your dedicated library branch management system.
+                    </li>
+                    <li>
+                      <strong>Exclusive 3-Month Free Trial Coupon Code:</strong> Your unique coupon code will be provided in the approval email. Log in to your admin panel, navigate to the Subscription section, enter the coupon code, and complete the ₹1 nominal Razorpay verification to activate your complimentary 3-month access.
+                    </li>
+                    <li>
+                      <strong>Secure Password Setup:</strong> Access the provided admin setup link and configure your secure password using the one-time verification code (OTP) sent to your registered mobile and Gmail.
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Slip Footer with Verification Details */}
+                <div style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  fontSize: "0.8rem",
+                  color: "#64748b",
+                  borderTop: "1px dashed #cbd5e1",
+                  paddingTop: "14px",
+                  flexWrap: "wrap",
+                  gap: "10px"
+                }}>
+                  <div>
+                    <span>Technical Support Helpline: </span>
+                    <strong style={{ color: "#0f172a" }}>+91 9142025447</strong> (WhatsApp & Calling)
+                  </div>
+                  <div style={{ fontStyle: "italic" }}>
+                    Computer-generated acknowledgment slip. Valid for branch activation.
+                  </div>
+                </div>
               </div>
 
               {/* Action Buttons */}
-              <div style={{
+              <div className="no-print" style={{
                 display: "flex",
                 flexDirection: "column",
                 gap: "14px",
@@ -1056,9 +1145,9 @@ export default function RegisterPage() {
                     type="button"
                     onClick={() => window.print()}
                     className="btn-primary"
-                    style={{ flex: 1, padding: "12px", justifyContent: "center", fontSize: "0.92rem" }}
+                    style={{ flex: 1, padding: "14px", justifyContent: "center", fontSize: "0.95rem", fontWeight: "800" }}
                   >
-                    <FaPrint /> Print / Save Slip
+                    <FaPrint /> Print / Save Slip as PDF
                   </button>
 
                   <button
@@ -1070,7 +1159,7 @@ export default function RegisterPage() {
                     }}
                     style={{
                       flex: 1,
-                      padding: "12px",
+                      padding: "14px",
                       borderRadius: "12px",
                       border: "1px solid var(--border-medium)",
                       background: "#ffffff",

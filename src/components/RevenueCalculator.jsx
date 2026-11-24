@@ -16,7 +16,7 @@ export default function RevenueCalculator() {
   return (
     <section className="section-padding" style={{ background: "#f8fafc", borderBottom: "1px solid var(--border-subtle)" }}>
       <div className="container">
-        <div className="white-card" style={{
+        <div className="white-card calc-white-card" style={{
           padding: "48px 36px",
           border: "1px solid var(--border-subtle)",
           boxShadow: "0 20px 50px rgba(15, 23, 42, 0.08)"
@@ -95,7 +95,7 @@ export default function RevenueCalculator() {
                 <label style={{ display: "block", fontSize: "0.95rem", fontWeight: "800", marginBottom: "10px", color: "#0f172a" }}>
                   Operational Shift Model:
                 </label>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "10px" }}>
+                <div className="calc-shift-buttons" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "10px" }}>
                   <button
                     type="button"
                     onClick={() => setShiftMultiplier(1.0)}
