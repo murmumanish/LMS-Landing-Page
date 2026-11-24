@@ -46,13 +46,6 @@ const INDIAN_STATES = [
   "West Bengal"
 ];
 
-const CAPACITY_OPTIONS = [
-  { value: "50", label: "50 Students", desc: "Starter Study Space / Reading Room", badge: "STARTER" },
-  { value: "200", label: "200 Students", desc: "Standard Medium Library", badge: "POPULAR" },
-  { value: "500", label: "500 Students", desc: "High-Capacity Academic Hub", badge: "HIGH-CAPACITY" },
-  { value: "Unlimited", label: "Unlimited (500+)", desc: "Enterprise & Multi-Branch Chain", badge: "ENTERPRISE" }
-];
-
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
     ownerName: "",
@@ -63,7 +56,7 @@ export default function RegisterPage() {
     cityName: "",
     stateName: "Uttar Pradesh",
     pincode: "",
-    capacity: "200",
+    capacity: "50",
     description: ""
   });
 
@@ -216,7 +209,7 @@ export default function RegisterPage() {
     });
 
     const fullAddress = [formData.addressLine, formData.stateName, formData.pincode].filter(Boolean).join(", ");
-    const capacitySeats = formData.capacity === "Unlimited" ? 1000 : Number(formData.capacity || 100);
+    const capacitySeats = 50; // Fixed at 50 seats for the Free plan
 
     // Payload for libraryregister collection
     // Note: Library Photo and Description are omitted (not saved) as requested
@@ -278,7 +271,7 @@ export default function RegisterPage() {
       city: cleanCity,
       state: formData.stateName,
       pincode: cleanPin,
-      capacity: formData.capacity,
+      capacity: "50",
       activeStudentsLimit: capacitySeats
     };
 
@@ -307,7 +300,7 @@ export default function RegisterPage() {
       `• City: ${formData.cityName}\n` +
       `• State: ${formData.stateName}\n` +
       `• Pincode: ${formData.pincode}\n` +
-      `\n🪑 *STUDENT CAPACITY:* ${formData.capacity} Students\n` +
+      `\n🪑 *STUDENT CAPACITY:* 50 Students (Free Plan)\n` +
       `📸 *Library Photo:* ${libraryPhoto ? libraryPhoto.name : "Attached / Selected"}\n` +
       (formData.description.trim() ? `\n📝 *Description:*\n${formData.description}\n` : "") +
       `━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
@@ -502,81 +495,7 @@ export default function RegisterPage() {
                 </div>
 
                 {/* ========================================================= */}
-                {/* SECTION 2: STUDENT CAPACITY SELECTION */}
-                {/* ========================================================= */}
-                <div style={{ paddingTop: "10px", borderTop: "1px dashed var(--border-subtle)" }}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "8px", marginBottom: "16px" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                      <div style={{
-                        width: "32px", height: "32px", borderRadius: "8px",
-                        background: "#ecfdf5", color: "#059669",
-                        display: "flex", alignItems: "center", justifyContent: "center",
-                        fontWeight: "800", fontSize: "14px"
-                      }}>
-                        2
-                      </div>
-                      <h3 style={{ fontSize: "1.15rem", fontWeight: "800", color: "#0f172a" }}>
-                        Student Capacity (Seats) <span style={{ color: "#ef4444" }}>*</span>
-                      </h3>
-                    </div>
-                    <span style={{ fontSize: "0.8rem", color: "#64748b" }}>
-                      Select your physical seat limit
-                    </span>
-                  </div>
-
-                  <div style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-                    gap: "14px"
-                  }}>
-                    {CAPACITY_OPTIONS.map((opt) => {
-                      const isSelected = formData.capacity === opt.value;
-                      return (
-                        <div
-                          key={opt.value}
-                          onClick={() => setFormData({ ...formData, capacity: opt.value })}
-                          style={{
-                            padding: "18px 16px",
-                            borderRadius: "14px",
-                            border: `2px solid ${isSelected ? "#2563eb" : "var(--border-subtle)"}`,
-                            background: isSelected ? "#eff6ff" : "#ffffff",
-                            cursor: "pointer",
-                            transition: "all 0.2s ease",
-                            display: "flex",
-                            flexDirection: "column",
-                            justifyContent: "space-between",
-                            position: "relative",
-                            boxShadow: isSelected ? "0 8px 20px rgba(37,99,235,0.12)" : "none"
-                          }}
-                        >
-                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px" }}>
-                            <span style={{
-                              fontSize: "0.68rem",
-                              fontWeight: "800",
-                              padding: "2px 8px",
-                              borderRadius: "6px",
-                              background: isSelected ? "#2563eb" : "#f1f5f9",
-                              color: isSelected ? "#ffffff" : "#64748b"
-                            }}>
-                              {opt.badge}
-                            </span>
-                            {isSelected && <FaCheckCircle style={{ color: "#2563eb", fontSize: "18px" }} />}
-                          </div>
-
-                          <div style={{ fontSize: "1.25rem", fontWeight: "900", color: isSelected ? "#1d4ed8" : "#0f172a", marginBottom: "4px" }}>
-                            {opt.label}
-                          </div>
-                          <div style={{ fontSize: "0.78rem", color: "#64748b" }}>
-                            {opt.desc}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* ========================================================= */}
-                {/* SECTION 3: ADDRESS DETAILS */}
+                {/* SECTION 2: ADDRESS DETAILS */}
                 {/* ========================================================= */}
                 <div style={{ paddingTop: "10px", borderTop: "1px dashed var(--border-subtle)" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "18px" }}>
@@ -586,7 +505,7 @@ export default function RegisterPage() {
                       display: "flex", alignItems: "center", justifyContent: "center",
                       fontWeight: "800", fontSize: "14px"
                     }}>
-                      3
+                      2
                     </div>
                     <div>
                       <h3 style={{ fontSize: "1.15rem", fontWeight: "800", color: "#0f172a" }}>
@@ -702,7 +621,7 @@ export default function RegisterPage() {
                 </div>
 
                 {/* ========================================================= */}
-                {/* SECTION 4: CLEAR PICTURE OF THE LIBRARY */}
+                {/* SECTION 3: CLEAR PICTURE OF THE LIBRARY */}
                 {/* ========================================================= */}
                 <div style={{ paddingTop: "10px", borderTop: "1px dashed var(--border-subtle)" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
@@ -712,7 +631,7 @@ export default function RegisterPage() {
                       display: "flex", alignItems: "center", justifyContent: "center",
                       fontWeight: "800", fontSize: "14px"
                     }}>
-                      4
+                      3
                     </div>
                     <div>
                       <h3 style={{ fontSize: "1.15rem", fontWeight: "800", color: "#0f172a" }}>
@@ -820,7 +739,7 @@ export default function RegisterPage() {
                 </div>
 
                 {/* ========================================================= */}
-                {/* SECTION 5: LIBRARY DESCRIPTION */}
+                {/* SECTION 4: LIBRARY DESCRIPTION */}
                 {/* ========================================================= */}
                 <div style={{ paddingTop: "10px", borderTop: "1px dashed var(--border-subtle)" }}>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px", flexWrap: "wrap", gap: "8px" }}>
@@ -831,7 +750,7 @@ export default function RegisterPage() {
                         display: "flex", alignItems: "center", justifyContent: "center",
                         fontWeight: "800", fontSize: "14px"
                       }}>
-                        5
+                        4
                       </div>
                       <div>
                         <h3 style={{ fontSize: "1.15rem", fontWeight: "800", color: "#0f172a" }}>
@@ -1003,7 +922,7 @@ export default function RegisterPage() {
                   </div>
                   <div>
                     <span style={{ color: "#64748b", fontSize: "0.8rem", display: "block" }}>Student Capacity:</span>
-                    <strong style={{ color: "#2563eb" }}>{formData.capacity} Students</strong>
+                    <strong style={{ color: "#2563eb" }}>50 Students (Free Plan)</strong>
                   </div>
                   <div>
                     <span style={{ color: "#64748b", fontSize: "0.8rem", display: "block" }}>City & State:</span>
