@@ -96,7 +96,7 @@ const libraryRegisterSchema = new mongoose.Schema(
     address: { type: String, default: "" },
     city: { type: String, default: "Noida" },
     phone: { type: String, required: true },
-    activeStudentsLimit: { type: Number, default: 100 },
+    activeStudentsLimit: { type: Number, default: 50 },
 
     ownerName: { type: String, required: true },
     email: { type: String, required: true },

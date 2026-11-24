@@ -57,6 +57,7 @@ export default function RegisterPage() {
     cityName: "",
     stateName: "Uttar Pradesh",
     pincode: "",
+    capacity: "200",
     description: ""
   });
 
@@ -213,7 +214,7 @@ export default function RegisterPage() {
     });
 
     const fullAddress = [formData.addressLine, formData.stateName, formData.pincode].filter(Boolean).join(", ");
-    const capacitySeats = 1000;
+    const capacitySeats = formData.capacity === "Unlimited" ? 1000 : Number(formData.capacity || 100);
 
     // Payload for libraryregister collection
     // Note: Library Photo and Description are omitted (not saved) as requested
@@ -238,19 +239,20 @@ export default function RegisterPage() {
       setSubmissionDate(nowTime);
       setServerNotice("Registration submitted successfully! Our onboarding team will verify and activate your branch portal.");
 
-      // Save registration acknowledgment locally without photo and without description
-      const registrationRecord = {
-        regId: assignedId,
-        submittedAt: nowTime,
-        ownerName: cleanOwner,
-        libraryName: cleanLib,
-        email: cleanGmail,
-        phone: cleanPhone,
-        city: cleanCity,
-        state: formData.stateName,
-        pincode: cleanPin,
-        activeStudentsLimit: capacitySeats
-      };
+    // Save registration acknowledgment locally without photo and without description
+    const registrationRecord = {
+      regId: assignedId,
+      submittedAt: nowTime,
+      ownerName: cleanOwner,
+      libraryName: cleanLib,
+      email: cleanGmail,
+      phone: cleanPhone,
+      city: cleanCity,
+      state: formData.stateName,
+      pincode: cleanPin,
+      capacity: formData.capacity,
+      activeStudentsLimit: capacitySeats
+    };
 
       try {
         const stored = JSON.parse(localStorage.getItem("lms_registered_libraries") || "[]");
@@ -291,7 +293,8 @@ export default function RegisterPage() {
       `• City: ${formData.cityName}\n` +
       `• State: ${formData.stateName}\n` +
       `• Pincode: ${formData.pincode}\n` +
-      ` *Library Photo:* ${libraryPhoto ? libraryPhoto.name : "Attached / Selected"}\n` +
+      `\n🪑 *STUDENT CAPACITY:* ${formData.capacity} Students\n` +
+      `📸 *Library Photo:* ${libraryPhoto ? libraryPhoto.name : "Attached / Selected"}\n` +
       (formData.description.trim() ? `\n📝 *Description:*\n${formData.description}\n` : "") +
       `━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
       `Please review and activate my library portal credentials!`
@@ -1017,12 +1020,8 @@ export default function RegisterPage() {
                     <strong style={{ color: "#0f172a" }}>+91 {formData.phone}</strong>
                   </div>
                   <div>
-                    <span style={{ color: "#64748b", fontSize: "0.78rem", fontWeight: "700", display: "block", textTransform: "uppercase" }}>
-                      Branch Location
-                    </span>
-                    <strong style={{ color: "#0f172a" }}>
-                      {formData.cityName}, {formData.stateName} {formData.pincode ? `(${formData.pincode})` : ""}
-                    </strong>
+                    <span style={{ color: "#64748b", fontSize: "0.8rem", display: "block" }}>Student Capacity:</span>
+                    <strong style={{ color: "#2563eb" }}>{formData.capacity} Students</strong>
                   </div>
                   <div>
                     <span style={{ color: "#64748b", fontSize: "0.78rem", fontWeight: "700", display: "block", textTransform: "uppercase" }}>
