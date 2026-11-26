@@ -11,6 +11,8 @@ import ContactUs from "./pages/ContactUs";
 import RegisterPage from "./pages/RegisterPage";
 import NotFound from "./pages/NotFound";
 import GuidePage from "./pages/GuidePage";
+import TermsPage from "./pages/TermsPage";
+import PrivacyPage from "./pages/PrivacyPage";
 
 // Scroll to top helper on route change
 function ScrollToTop() {
@@ -37,6 +39,8 @@ export default function App() {
             <Route path="/contact-us" element={<ContactUs />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/guide" element={<GuidePage />} />
+            <Route path="/terms" element={<TermsPage />} />
+            <Route path="/privacy-policy" element={<PrivacyPage />} />
             <Route path="/demo" element={<Navigate to="/register" replace />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

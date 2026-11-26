@@ -1,6 +1,14 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { FaCalculator, FaRupeeSign, FaClock, FaCheckCircle, FaArrowRight } from "react-icons/fa";
+import { FaCalculator, FaClock, FaArrowRight } from "react-icons/fa";
+
+const SHIFT_OPTIONS = [
+  { count: 1, label: "1 Shift", multiplier: 1.0 },
+  { count: 2, label: "2 Shifts", multiplier: 1.8 },
+  { count: 3, label: "3 Shifts", multiplier: 2.5 },
+  { count: 4, label: "4 Shifts", multiplier: 3.2 },
+  { count: 5, label: "5 Shifts", multiplier: 3.8 }
+];
 
 export default function RevenueCalculator() {
   const [seats, setSeats] = useState(100);
@@ -76,7 +84,7 @@ export default function RevenueCalculator() {
                 </div>
                 <input
                   type="range"
-                  min="400"
+                  min="200"
                   max="2000"
                   step="50"
                   value={feePerSeat}
@@ -84,65 +92,40 @@ export default function RevenueCalculator() {
                   style={{ width: "100%", accentColor: "#10b981", cursor: "pointer", height: "8px" }}
                 />
                 <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.78rem", color: "#64748b", marginTop: "6px" }}>
-                  <span>₹400 / mo</span>
+                  <span>₹200 / mo</span>
                   <span>₹1,000 / mo</span>
                   <span>₹2,000 / mo</span>
                 </div>
               </div>
 
-              {/* Shift Multiplier */}
+              {/* Shift Multiplier (1 to 5 Shifts) */}
               <div>
                 <label style={{ display: "block", fontSize: "0.95rem", fontWeight: "800", marginBottom: "10px", color: "#0f172a" }}>
-                  Operational Shift Model:
+                  Operational Shift Model (1 to 5 Shifts):
                 </label>
-                <div className="calc-shift-buttons" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "10px" }}>
-                  <button
-                    type="button"
-                    onClick={() => setShiftMultiplier(1.0)}
-                    style={{
-                      padding: "10px",
-                      borderRadius: "10px",
-                      fontSize: "0.82rem",
-                      fontWeight: "800",
-                      background: shiftMultiplier === 1.0 ? "#eff6ff" : "#f1f5f9",
-                      color: shiftMultiplier === 1.0 ? "#2563eb" : "#475569",
-                      border: shiftMultiplier === 1.0 ? "2px solid #2563eb" : "1px solid var(--border-subtle)"
-                    }}
-                  >
-                    1 Shift (Full Day)
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setShiftMultiplier(1.8)}
-                    style={{
-                      padding: "10px",
-                      borderRadius: "10px",
-                      fontSize: "0.82rem",
-                      fontWeight: "800",
-                      background: shiftMultiplier === 1.8 ? "#eff6ff" : "#f1f5f9",
-                      color: shiftMultiplier === 1.8 ? "#2563eb" : "#475569",
-                      border: shiftMultiplier === 1.8 ? "2px solid #2563eb" : "1px solid var(--border-subtle)"
-                    }}
-                  >
-                    2 Shifts (Day & Eve)
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setShiftMultiplier(2.5)}
-                    style={{
-                      padding: "10px",
-                      borderRadius: "10px",
-                      fontSize: "0.82rem",
-                      fontWeight: "800",
-                      background: shiftMultiplier === 2.5 ? "#eff6ff" : "#f1f5f9",
-                      color: shiftMultiplier === 2.5 ? "#2563eb" : "#475569",
-                      border: shiftMultiplier === 2.5 ? "2px solid #2563eb" : "1px solid var(--border-subtle)"
-                    }}
-                  >
-                    3-4 Shifts (24 Hours)
-                  </button>
+                <div className="calc-shift-buttons" style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "8px" }}>
+                  {SHIFT_OPTIONS.map((opt) => {
+                    const isActive = shiftMultiplier === opt.multiplier;
+                    return (
+                      <button
+                        key={opt.count}
+                        type="button"
+                        onClick={() => setShiftMultiplier(opt.multiplier)}
+                        style={{
+                          padding: "10px 6px",
+                          borderRadius: "10px",
+                          fontSize: "0.82rem",
+                          fontWeight: "800",
+                          cursor: "pointer",
+                          background: isActive ? "#eff6ff" : "#f1f5f9",
+                          color: isActive ? "#2563eb" : "#475569",
+                          border: isActive ? "2px solid #2563eb" : "1px solid var(--border-subtle)"
+                        }}
+                      >
+                        {opt.label}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </div>

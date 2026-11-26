@@ -239,7 +239,24 @@ export default function FeatureWorkflowGuide() {
 
   const [activeStep, setActiveStep] = useState(getInitialStep);
   const [zoomImg, setZoomImg] = useState(null);
+  const [loadedImages, setLoadedImages] = useState({});
   const currentStep = steps[activeStep] || steps[0];
+  const isCurrentImgLoaded = Boolean(loadedImages[currentStep.mockup.imgSrc]);
+
+  // Preload all step screenshots in background so switching tabs is instant without showing stale images
+  useEffect(() => {
+    steps.forEach((step) => {
+      const url = step.mockup.imgSrc;
+      const img = new Image();
+      img.onload = () => {
+        setLoadedImages((prev) => (prev[url] ? prev : { ...prev, [url]: true }));
+      };
+      img.src = url;
+      if (img.complete) {
+        setLoadedImages((prev) => (prev[url] ? prev : { ...prev, [url]: true }));
+      }
+    });
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -529,20 +546,68 @@ export default function FeatureWorkflowGuide() {
                     className="workflow-screen-image-wrap"
                     style={{
                       position: "relative",
-                      background: "#ffffff",
+                      background: "#f8fafc",
                       overflow: "hidden",
-                      cursor: "zoom-in"
+                      cursor: "zoom-in",
+                      minHeight: isCurrentImgLoaded ? "auto" : "320px"
                     }}
                     onClick={() => setZoomImg(currentStep.mockup.imgSrc)}
                     title="Click to view full HD screenshot"
                   >
+                    {!isCurrentImgLoaded && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          inset: 0,
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "10px",
+                          background: "#f8fafc",
+                          color: "#64748b",
+                          fontSize: "0.88rem",
+                          fontWeight: "700",
+                          zIndex: 2
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: "28px",
+                            height: "28px",
+                            border: "3px solid #cbd5e1",
+                            borderTopColor: currentStep.accentColor,
+                            borderRadius: "50%",
+                            animation: "spin 0.7s linear infinite"
+                          }}
+                        />
+                        <span>Loading {currentStep.shortTitle} preview...</span>
+                      </div>
+                    )}
                     <img
+                      key={currentStep.id}
                       src={currentStep.mockup.imgSrc}
                       alt={currentStep.mockup.alt}
+                      onLoad={() =>
+                        setLoadedImages((prev) =>
+                          prev[currentStep.mockup.imgSrc]
+                            ? prev
+                            : { ...prev, [currentStep.mockup.imgSrc]: true }
+                        )
+                      }
+                      onError={() =>
+                        setLoadedImages((prev) =>
+                          prev[currentStep.mockup.imgSrc]
+                            ? prev
+                            : { ...prev, [currentStep.mockup.imgSrc]: true }
+                        )
+                      }
                       style={{
                         width: "100%",
                         height: "auto",
                         display: "block",
+                        opacity: isCurrentImgLoaded ? 1 : 0,
+                        transition: "opacity 0.2s ease",
                         imageRendering: "-webkit-optimize-contrast",
                         filter: "contrast(101.5%) brightness(100.5%)"
                       }}

@@ -1094,8 +1094,14 @@ video {
     padding: 24px 16px !important;
   }
   .calc-shift-buttons {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)) !important;
     gap: 8px !important;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
 }
 

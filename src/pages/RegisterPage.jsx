@@ -824,7 +824,14 @@ export default function RegisterPage() {
                       style={{ marginTop: "4px", width: "18px", height: "18px", accentColor: "#2563eb" }}
                     />
                     <span style={{ fontSize: "0.85rem", color: "#475569", lineHeight: 1.5 }}>
-                      I confirm that I am the owner or authorized administrator of this study library. The provided library details and photographs are genuine and accurate.
+                      I confirm that I am the owner or authorized administrator of this study library, the provided details are accurate, and I agree to the{" "}
+                      <Link to="/terms" target="_blank" rel="noopener noreferrer" style={{ color: "#2563eb", fontWeight: "700", textDecoration: "underline" }}>
+                        Terms &amp; Conditions
+                      </Link>{" "}
+                      and{" "}
+                      <Link to="/privacy-policy" target="_blank" rel="noopener noreferrer" style={{ color: "#2563eb", fontWeight: "700", textDecoration: "underline" }}>
+                        Privacy Policy
+                      </Link>.
                     </span>
                   </label>
                 </div>

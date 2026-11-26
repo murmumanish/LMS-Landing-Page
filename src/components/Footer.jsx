@@ -171,6 +171,34 @@ export default function Footer() {
                 Contact Us
               </Link>
               <Link
+                to="/terms"
+                style={{ color: "#f0f9ff", transition: "all 0.2s" }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.color = "#fed7aa";
+                  e.currentTarget.style.transform = "translateX(4px)";
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.color = "#f0f9ff";
+                  e.currentTarget.style.transform = "translateX(0)";
+                }}
+              >
+                Terms &amp; Conditions
+              </Link>
+              <Link
+                to="/privacy-policy"
+                style={{ color: "#f0f9ff", transition: "all 0.2s" }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.color = "#fed7aa";
+                  e.currentTarget.style.transform = "translateX(4px)";
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.color = "#f0f9ff";
+                  e.currentTarget.style.transform = "translateX(0)";
+                }}
+              >
+                Privacy Policy
+              </Link>
+              <Link
                 to="/register"
                 style={{
                   marginTop: "4px",
@@ -371,8 +399,24 @@ export default function Footer() {
             fontWeight: "500"
           }}
         >
-          <div>
-            LMS by Study Guru. All study library operations automated.
+          <div style={{ display: "flex", alignItems: "center", gap: "14px", flexWrap: "wrap" }}>
+            <span>LMS by Study Guru. All study library operations automated.</span>
+            <Link
+              to="/terms"
+              style={{ color: "#ffffff", fontWeight: "700", textDecoration: "underline" }}
+              onMouseOver={(e) => (e.currentTarget.style.color = "#fed7aa")}
+              onMouseOut={(e) => (e.currentTarget.style.color = "#ffffff")}
+            >
+              Terms &amp; Conditions
+            </Link>
+            <Link
+              to="/privacy-policy"
+              style={{ color: "#ffffff", fontWeight: "700", textDecoration: "underline" }}
+              onMouseOver={(e) => (e.currentTarget.style.color = "#fed7aa")}
+              onMouseOut={(e) => (e.currentTarget.style.color = "#ffffff")}
+            >
+              Privacy Policy
+            </Link>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
             <span>Designed & Developed by</span>
