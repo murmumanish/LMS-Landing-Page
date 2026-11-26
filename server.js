@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import { sendRegistrationEmail } from "./utils/emailMailer.js";
 
 dotenv.config();
 
@@ -348,10 +349,29 @@ app.post("/api/register", async (req, res) => {
       throw lastError || new Error("Could not allocate a registration ID. Please try again.");
     }
 
+    const applicationId = `LMS-REG-${savedRecord.id}`;
+    let emailSent = false;
+
+    try {
+      const mailResult = await sendRegistrationEmail({
+        applicationId,
+        libraryName: savedRecord.libraryName,
+        ownerName: savedRecord.ownerName,
+        email: savedRecord.email,
+        phone: savedRecord.phone,
+        city: savedRecord.city
+      });
+      emailSent = Boolean(mailResult?.sent);
+    } catch (mailError) {
+      console.error("[Gmail API] Failed to send registration email:", mailError.message);
+    }
+
     return res.status(201).json({
       success: true,
       message: "Library registered successfully into libraryregister collection.",
       id: savedRecord.id,
+      applicationId,
+      emailSent,
       data: savedRecord
     });
   } catch (error) {

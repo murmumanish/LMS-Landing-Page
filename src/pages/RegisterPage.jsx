@@ -233,11 +233,15 @@ export default function RegisterPage() {
 
     try {
       const result = await postJson("/api/register", payload);
-      const assignedId = result.id ? `LMS-REG-${result.id}` : uniqueId;
+      const assignedId = result.applicationId || (result.id ? `LMS-REG-${result.id}` : uniqueId);
 
       setRegId(assignedId);
       setSubmissionDate(nowTime);
-      setServerNotice("Registration submitted successfully! Our onboarding team will verify and activate your branch portal.");
+      setServerNotice(
+        result.emailSent
+          ? `Registration submitted successfully! Confirmation email sent to ${cleanGmail}.`
+          : "Registration submitted successfully! Our onboarding team will verify and activate your branch portal."
+      );
 
     // Save registration acknowledgment locally without photo and without description
     const registrationRecord = {
